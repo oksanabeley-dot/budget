@@ -49,25 +49,28 @@ def save_to_file(shopping_list):
     #     f.write("2 line")
     #     f.write("new_line")
     with open("text.txt", "w", encoding="utf-8") as f:
-        for i, item in enumerate(shopping_list, start=1):
-            # print(i, item)
-            f.write(f"{i}. {item["name"]} - {item["quantity"]} x {item["price"]}€\n")
-    print("✅Shopping_list saved to text.txt")
+        for item in shopping_list:
+            # Запис у форматі key=value
+            f.write(f"name:{item['name']} quantity:{item['quantity']} price:{item['price']}\n")
+    print("✅ Shopping_list saved to text.txt")
 
 def load_from_file():
     shopping_list = []
     with open("text.txt", "r", encoding="utf-8") as f:
         for line in f:
-            line_list = line.strip()[:-1].split()
-            # for i in range(1, len(line_list), 2):
-            name, quantity, price = line_list[1], line_list[3], line_list[5]
+            parts = line.strip().split()
+            data = {}
+            for part in parts:
+                if ":" in part:                # пропускаємо слова без ":" (частини назви)
+                    key, value = part.split(":", 1)
+                    data[key] = value
             item = {
-                "name": name,
-                "quantity": int(quantity),
-                "price": float(price)
+                "name": data["name"],
+                "quantity": int(data["quantity"]),
+                "price": float(data["price"])
             }
             shopping_list.append(item)
-    print("✅Shopping_list loaded from text.txt")
+    print("✅ Shopping_list loaded from text.txt")
     return shopping_list
         
 
@@ -76,6 +79,7 @@ def main():
     shopping_list = []
     
     while True:
+     # Нескінченний цикл   
         print("------------------------------")
         print('''
 Меню:
@@ -89,20 +93,15 @@ def main():
         try:
             choice = int(input("Ваш вибір: "))
         except ValueError:
+         # Спрацьовує, якщо користувач ввів не число і int() не може виконати перетворення
             print("Enter number 1-6!!")
             continue
-
-        # if choice == 1:
-        #     pass
-        # elif choice == 2:
-        #     pass
         match choice:
             case 1:
                 try:
                     add_item(shopping_list)
-                # except:
-                #    print("Error!")
                 except  Exception as e:
+                # Перехоплює будь-який інший виняток і зберігає його в змінній e
                     print(f"Error!:  {e}" )
             case 2:
                 show_list(shopping_list)
@@ -114,16 +113,13 @@ def main():
                 try:
                     shopping_list = load_from_file()
                 except FileNotFoundError:
+                # Спрацьовує, якщо файл не знайдено за вказаним шляхом
                     print("File not found!")
             case 6:
                 print("See you!!")
                 break
             case _:
                 print("Error! Enter number 1-6!")
-                
-    
-
-
 if __name__ == "__main__":
     main()
     

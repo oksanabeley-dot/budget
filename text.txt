@@ -1,0 +1,2 @@
+name:Хліб бородинський quantity:1 price:1.65
+name:Оселедець під шубою quantity:1 price:7.7
